@@ -34,10 +34,30 @@ async function run() {
         const taskCollection = client.db("taskManager").collection('tasks');
 
         app.get('/alltasks', async (req, res) => {
-            const query = {}
+            /*    const query = {}
+               const cursor = taskCollection.find(query);
+               const tasks = await cursor.toArray();
+               res.send(tasks); */
+
+            let query = {};
+            if (req.query.email) {
+                query = {
+                    email: req.query.email
+                }
+            }
             const cursor = taskCollection.find(query);
             const tasks = await cursor.toArray();
             res.send(tasks);
+        })
+
+
+        // adding tasks 
+
+        app.post('/alltasks', async (req, res) => {
+            const tasks = req.body;
+            const result = await taskCollection.insertOne(tasks);
+            // console.log(result);
+            res.send(result);
         })
     }
     catch {
